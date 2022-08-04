@@ -8,6 +8,8 @@ class Campsite < ApplicationRecord
   end
 
   def book(from, to)
+    raise RangeError, "No esta libre de #{from} a #{to}" unless available?(from, to)
+
     self.booked_dates += (from..to).to_a
     self.booked_dates.sort
     save

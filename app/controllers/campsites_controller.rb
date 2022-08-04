@@ -48,7 +48,9 @@ class CampsitesController < ApplicationController
     from = params.require(:from).to_date
     to = params.require(:to).to_date
 
-    if from < to && @campsite.book(from, to)
+    raise RangeError, "Fechas desordenadas #{from} #{to}" unless from <= to
+
+    if @campsite.book(from, to)
       render :show, status: :ok, location: @campsite
     else
       render json: @campsite.errors, status: :unprocessable_entity
@@ -64,6 +66,6 @@ class CampsitesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def campsite_params
-    params.require(:campsite).permit(:name, :price, :booked_dates, :campground_id)
+    params.require(:campsite).permit(:name, :price, :campground_id)
   end
 end

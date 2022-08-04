@@ -56,6 +56,8 @@ class CampgroundsController < ApplicationController
     from = params.require(:from).to_date
     to = params.require(:to).to_date
 
+    raise RangeError, "Fechas desordenadas #{from} #{to}" unless from <= to
+
     @campgrounds = Campground.availables(from, to)
     render :index
   end
