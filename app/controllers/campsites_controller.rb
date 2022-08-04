@@ -1,5 +1,5 @@
 class CampsitesController < ApplicationController
-  before_action :set_campsite, only: %i[show edit update destroy]
+  before_action :set_campsite, only: %i[show edit update book destroy]
 
   # GET /campsites or /campsites.json
   def index
@@ -44,6 +44,17 @@ class CampsitesController < ApplicationController
     head :no_content
   end
 
+  def book
+    from = params.require(:from).to_date
+    to = params.require(:to).to_date
+
+    if from < to && @campsite.book(from, to)
+      render :show, status: :ok, location: @campsite
+    else
+      render json: @campsite.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -53,6 +64,6 @@ class CampsitesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def campsite_params
-    params.require(:campsite).permit(:name, :price)
+    params.require(:campsite).permit(:name, :price, :booked_dates, :campground_id)
   end
 end

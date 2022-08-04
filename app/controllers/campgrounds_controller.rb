@@ -3,7 +3,14 @@ class CampgroundsController < ApplicationController
 
   # GET /campgrounds or /campgrounds.json
   def index
-    @campgrounds = Campground.all
+    sorted = params['sorted']
+
+    if sorted.blank?
+      @campgrounds = Campground.all
+    else
+      @campgrounds = Campground.price_desc  if sorted == 'price_desc'
+      @campgrounds = Campground.price_asc   if sorted == 'price_asc'
+    end
   end
 
   # GET /campgrounds/1 or /campgrounds/1.json
@@ -42,6 +49,15 @@ class CampgroundsController < ApplicationController
     @campground.destroy
 
     head :no_content
+  end
+
+  # GET /campgrounds/avaiables or /campgrounds/avaiables.json
+  def availables
+    from = params.require(:from).to_date
+    to = params.require(:to).to_date
+
+    @campgrounds = Campground.availables(from, to)
+    render :index
   end
 
   private

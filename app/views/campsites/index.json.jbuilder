@@ -1,1 +1,1 @@
-json.array! @campsites, partial: "campsites/campsite", as: :campsite
+json.array! @campsites, partial: 'campsites/campsite', as: :campsite
